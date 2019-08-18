@@ -1,0 +1,44 @@
+.chat-main {
+  position: relative;
+  font-size: 0;
+  width: 500px;
+  height: 100vh;
+  box-sizing: border-box;
+  border: 1px solid blue;
+  margin: 0 auto;
+}
+
+.messages-list {
+  width: 100%;
+  list-style: none;
+  padding: 0;
+  height: 80%;
+  overflow-y: auto;
+}
+
+.messages-item {
+  width: 100%;
+  font-size: 18px;
+  box-sizing: border-box;
+  padding-left: 10px;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.messages-form {
+  position: absolute;
+  bottom: 0;
+  font-size: 0;
+  width: 100%;
+}
+
+.messages-input {
+  box-sizing: border-box;
+  font-size: 18px;
+  width: 70%;
+}
+
+.messages-submit {
+  font-size: 18px;
+  width: 30%;
+}
