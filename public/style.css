@@ -1,8 +1,15 @@
+.chat-header {
+  position: relative;
+  margin: 0 auto;
+  width: 500px;
+  height: 10vh;
+}
+
 .chat-main {
   position: relative;
   font-size: 0;
   width: 500px;
-  height: 100vh;
+  height: 90vh;
   box-sizing: border-box;
   margin: 0 auto;
 }
@@ -11,9 +18,8 @@
   width: 100%;
   list-style: none;
   padding: 0;
-  padding-top: 10px;
   padding-left: 10px;
-  height: 90vh;
+  height: 80vh;
   overflow-y: auto;
 }
 
