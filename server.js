@@ -11,13 +11,16 @@ app.get('/', (req, res) => {
 app.use(express.static(path.join(__dirname, 'public')));
 
 io.on('connection', (socket) => {
-  const usernames = ['Popec', 'Klassik', 'Mysicant', 'Mydlo'];
-  const username = usernames[Math.floor(Math.random() * usernames.length)];
+  const usernames = ['Username', 'Poet', 'Plotnik', 'Alexander', 'Paul'];
+  let username = usernames[Math.floor(Math.random() * usernames.length)];
   socket.broadcast.emit('chat message', `${username} connected!`);
   socket.on('chat message', (msg) => {
     io.emit('chat message',  `${username}: ${msg}`);
   });
-  console.log('a user connected!');
+  socket.on('set username', (newUsername) => {
+    io.emit('set username', `${username} is now ${newUsername}`);
+    username = newUsername;
+  });
   socket.on('disconnect', () => {
     socket.broadcast.emit('chat message', `${username} disconnected!`);
   });
