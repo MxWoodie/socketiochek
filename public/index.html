@@ -11,7 +11,7 @@
 <body>
   <header class="chat-header">
     <form class="username-form" action="">
-        <input class="username-input" id="u" autocomplete="off" required placeholder="Username" />
+        <input class="username-input" autocomplete="off" required placeholder="Username" />
         <button class="username-submit">Change</button>
     </form>
   </header>
@@ -22,6 +22,10 @@
       <button class="messages-submit">Send</button>
     </form>
   </main>
+  <section class="chat-users">
+    <h2>Online:</h2>
+    <ul class="users-list"></ul>
+  </section>
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="script.js"></script>

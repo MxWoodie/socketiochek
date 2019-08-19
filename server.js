@@ -10,22 +10,42 @@ app.get('/', (req, res) => {
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+/*
+1. Отправляем сообщение о подключении
+2. Меняем placeholder
+3. Добавляем в список пользователей онлайн
+?Хранить список пользователей онлайн?
+*/
+
 io.on('connection', (socket) => {
-  const usernames = ['Username', 'Poet', 'Plotnik', 'Alexander', 'Paul'];
-  let username = usernames[Math.floor(Math.random() * usernames.length)];
-  socket.broadcast.emit('chat message', `${username} connected!`);
+  socket.username = socket.id;
+  socket.emit('set username placeholder', socket.username);
+  updateUserList();
+  socket.broadcast.emit('chat message', `${socket.username} connected!`);
   socket.on('chat message', (msg) => {
-    io.emit('chat message',  `${username}: ${msg}`);
+    io.emit('chat message',  `${socket.username}: ${msg}`);
   });
   socket.on('set username', (newUsername) => {
-    io.emit('set username', `${username} is now ${newUsername}`);
-    username = newUsername;
+    io.emit('set username', `${socket.username} is now ${newUsername}`, newUsername);
+    socket.username = newUsername;
+    socket.emit('set username placeholder', socket.username);
+    updateUserList();
   });
   socket.on('disconnect', () => {
-    socket.broadcast.emit('chat message', `${username} disconnected!`);
+    socket.broadcast.emit('chat message', `${socket.username} disconnected!`);
+    updateUserList();
   });
 });
 
 http.listen( process.env.PORT || 3000, () => {
   console.log('Listening on port 3000')
-})
+});
+
+function updateUserList() {
+  const userList = [];
+  for(key in io.sockets.connected) {
+    const username = io.sockets.connected[key].username;
+    userList.push(username);
+  }
+  io.emit('update list of users', userList);
+}

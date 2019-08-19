@@ -48,3 +48,8 @@
   font-size: 18px;
   width: 30%;
 }
+
+.chat-users {
+  position: fixed;
+  top: 0;
+}
