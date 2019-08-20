@@ -9,23 +9,26 @@
   <title>Socketiochek</title>
 </head>
 <body>
-  <header class="chat-header">
-    <form class="username-form" action="">
-        <input class="username-input" autocomplete="off" required placeholder="Username" />
-        <button class="username-submit">Change</button>
-    </form>
-  </header>
   <main class="chat-main">
-    <ul class="messages-list" id="messages"></ul>
-    <form class="messages-form" action="">
-      <input class="messages-input" id="m" autocomplete="off" autofocus required />
-      <button class="messages-submit">Send</button>
-    </form>
+    <section class="chat-username-section">
+      <form class="username-form" action="">
+          <input class="username-input" autocomplete="off" required placeholder="Username" />
+          <button class="username-submit">Change username</button>
+      </form>
+    </section>
+    <section class="chat-section">
+      <ul class="messages-list" id="messages"></ul>
+      <form class="messages-form" action="">
+        <input class="messages-input" id="m" autocomplete="off" autofocus 
+        required placeholder="Start typing your message and press Enter to send." />
+        <button class="messages-submit">Send</button>
+      </form>
+    </section>
+    <section class="chat-users">
+      <h2>Online:</h2>
+      <ul class="users-list"></ul>
+    </section>
   </main>
-  <section class="chat-users">
-    <h2>Online:</h2>
-    <ul class="users-list"></ul>
-  </section>
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="script.js"></script>
