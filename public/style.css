@@ -6,10 +6,12 @@
 .chat-username-section,
 .chat-users {
   width: 20%;
+  background-color: #eceff1;
 }
 
 .username-input {
   width: 100%;
+  box-sizing: border-box;
 }
 
 .chat-section {
@@ -23,7 +25,8 @@
   overflow-y: scroll;
   word-wrap: break-word;
   list-style: none;
-  padding: 0 20px;
+  padding: 10px 20px 0;
+  margin: 0;
 }
 
 .messages-form {
