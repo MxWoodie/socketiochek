@@ -10,20 +10,17 @@ app.get('/', (req, res) => {
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-/*
-1. Отправляем сообщение о подключении
-2. Меняем placeholder
-3. Добавляем в список пользователей онлайн
-?Хранить список пользователей онлайн?
-*/
-
 io.on('connection', (socket) => {
   socket.username = socket.id;
   socket.emit('set username placeholder', socket.username);
   updateUserList();
   socket.broadcast.emit('chat message', `${socket.username} connected!`);
-  socket.on('chat message', (msg) => {
-    io.emit('chat message',  `${socket.username}: ${msg}`);
+  socket.on('chat message', (message) => {
+    const msg = {
+      username: socket.username,
+      message: message
+    }
+    io.emit('chat message',  msg);
   });
   socket.on('set username', (newUsername) => {
     io.emit('set username', `${socket.username} is now ${newUsername}`, newUsername);

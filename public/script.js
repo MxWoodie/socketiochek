@@ -16,17 +16,17 @@ $(function () {
     return false;
   });
   socket.on('set username', (msg) => {
-    $('#messages').append($('<li class="messages-item">').text(msg));
-    $('#messages').animate({scrollTop: $('#messages').prop("scrollHeight")}, 300);
+    $('.messages-list').append($('<li class="messages-item">').text(msg));
+    $('.messages-list').animate({scrollTop: $('.messages-list').prop("scrollHeight")}, 300);
   });
   $('.messages-form').submit((e) => {
     e.preventDefault(); // prevents page reloading
-    socket.emit('chat message', $('#m').val());
-    $('#m').val('');
+    socket.emit('chat message', $('.messages-input').val());
+    $('.messages-input').val('');
     return false;
   });
   socket.on('chat message', (msg) => {
-    $('#messages').append($('<li class="messages-item">').text(msg));
-    $('#messages').animate({scrollTop: $('#messages').prop("scrollHeight")}, 300);
+    $('.messages-list').append($(`<li class="messages-item"><b>${msg.username}:</b> ${msg.message}</li>`));
+    $('.messages-list').animate({scrollTop: $('.messages-list').prop("scrollHeight")}, 300);
   });
 });
