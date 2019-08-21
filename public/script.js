@@ -17,7 +17,7 @@ $(function () {
   });
   socket.on('set username', (msg) => {
     $('.messages-list').append($('<li class="messages-item">').text(msg));
-    $('.messages-list').animate({scrollTop: $('.messages-list').prop("scrollHeight")}, 300);
+    chatScroll();
   });
   $('.messages-form').submit((e) => {
     e.preventDefault(); // prevents page reloading
@@ -27,6 +27,13 @@ $(function () {
   });
   socket.on('chat message', (msg) => {
     $('.messages-list').append($(`<li class="messages-item"><b>${msg.username}:</b> ${msg.message}</li>`));
-    $('.messages-list').animate({scrollTop: $('.messages-list').prop("scrollHeight")}, 300);
+    chatScroll();
   });
+  socket.on(('user status'), (msg) => {
+    $('.messages-list').append($('<li class="messages-item">').append(msg));
+    chatScroll();
+  });
+  const chatScroll = () => {
+    $('.messages-list').animate({scrollTop: $('.messages-list').prop("scrollHeight")}, 300);
+  }
 });

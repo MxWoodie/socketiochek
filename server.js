@@ -14,7 +14,7 @@ io.on('connection', (socket) => {
   socket.username = socket.id;
   socket.emit('set username placeholder', socket.username);
   updateUserList();
-  socket.broadcast.emit('chat message', `${socket.username} connected!`);
+  socket.broadcast.emit('user status', `${socket.username} connected!`);
   socket.on('chat message', (message) => {
     const msg = {
       username: socket.username,
@@ -29,7 +29,7 @@ io.on('connection', (socket) => {
     updateUserList();
   });
   socket.on('disconnect', () => {
-    socket.broadcast.emit('chat message', `${socket.username} disconnected!`);
+    socket.broadcast.emit('user status', `${socket.username} disconnected!`);
     updateUserList();
   });
 });
