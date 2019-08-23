@@ -25,8 +25,14 @@ io.on('connection', (socket) => {
     socket.emit('set username placeholder', socket.username);
     updateUsersList();
   });
+  socket.on('start typing', () => {
+    io.emit('start typing', { id: socket.id ,username: socket.username });
+  });
+  socket.on('stop typing', () => {
+    io.emit('stop typing', { id: socket.id, username: socket.username });
+  });
   socket.on('disconnect', () => {
-    socket.broadcast.emit('user status', { username: socket.username, status: 'disconnected' });
+    socket.broadcast.emit('user status', { id: socket.id, username: socket.username, status: 'disconnected' });
     updateUsersList();
   });
 });

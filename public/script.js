@@ -7,6 +7,39 @@ $(function () {
   const $messagesInput = $('.messages-input');
   const $messagesList = $('.messages-list');
 
+  let typing = false;
+  let timeout = undefined;
+  
+  /*
+  Нажимаем кнопку
+  Отправляется ивент
+  Добавляется тайпинг
+  Запускается таймер обновляемый после каждого тайпа
+  По прошествию таймера или отправке сообщения убираем тайпинг
+  */
+
+  $messagesInput.keydown(() => {
+    if (typing === false) {
+      typing = true;
+      socket.emit('start typing');
+      timeout = setTimeout(stopTyping, 5000);
+    } else {
+      clearTimeout(timeout);
+      timeout = setTimeout(stopTyping, 5000);
+    }
+  });
+  socket.on('start typing', (user) => {
+    $messagesList
+      .append($(`<li class="messages-item typing ${user.id}">`)
+        .append(`<i>${user.username} is typing a message...</i>`));
+  });
+  const stopTyping = () => {
+    typing = false;
+    socket.emit('stop typing');
+  };
+  socket.on('stop typing', (user) => {
+    $(`.typing.${user.id}`).remove();
+  });
   socket.on('set username placeholder', (username) => {
     $usernameInput.attr('placeholder', username);
   });
@@ -21,9 +54,16 @@ $(function () {
     return false;
   });
   socket.on('set username', (msg) => {
-    $messagesList
+    if ($(`.typing`)) {
+      $(`.typing`)
+        .first()
+        .before($('<li class="messages-item">')
+          .append(`<b>'${msg.username}' is now '${msg.newUsername}'</b>`));
+    } else {
+      $messagesList
       .append($('<li class="messages-item">')
-      .append(`<b>'${msg.username}' is now '${msg.newUsername}'</b>`));
+        .append(`<b>'${msg.username}' is now '${msg.newUsername}'</b>`));
+    };
     chatScroll();
   });
   $messagesForm.submit((e) => {
@@ -31,11 +71,25 @@ $(function () {
     return false;
   });
   socket.on('chat message', (msg) => {
-    $messagesList.append($(`<li class="messages-item"><b>${msg.username}:</b> ${msg.message}</li>`));
+    if (typing) stopTyping();
+    if ($(`.typing`)) {
+      $(`.typing`)
+        .first()
+        .before($(`<li class="messages-item"><b>${msg.username}:</b> ${msg.message}</li>`));
+    } else {
+      $messagesList.append($(`<li class="messages-item"><b>${msg.username}:</b> ${msg.message}</li>`));
+    };
     chatScroll();
   });
   socket.on(('user status'), (msg) => {
-    $messagesList.append($('<li class="messages-item">').append(`<b>${msg.username} ${msg.status}!</b>`));
+    if (typing  && msg.status === 'disconnected') $(`.typing.${msg.id}`).remove();
+    if ($(`.typing`)) {
+      $(`.typing`)
+        .first()
+        .before($('<li class="messages-item">').append(`<b>${msg.username} ${msg.status}!</b>`));
+    } else {
+      $messagesList.append($('<li class="messages-item">').append(`<b>${msg.username} ${msg.status}!</b>`));
+    };
     chatScroll();
   });
   const submitForm = (socketEvent, e) => {
@@ -53,7 +107,7 @@ $(function () {
 
       default:
         throw new Error('Submit error');
-    }
+    };
   };
   const chatScroll = () => {
     $messagesList.animate({scrollTop: $messagesList.prop("scrollHeight")}, 300);
