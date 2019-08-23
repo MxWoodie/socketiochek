@@ -32,6 +32,7 @@ io.on('connection', (socket) => {
     io.emit('stop typing', { id: socket.id, username: socket.username });
   });
   socket.on('disconnect', () => {
+    io.emit('stop typing', { id: socket.id ,username: socket.username });
     socket.broadcast.emit('user status', { id: socket.id, username: socket.username, status: 'disconnected' });
     updateUsersList();
   });

@@ -54,15 +54,15 @@ $(function () {
     return false;
   });
   socket.on('set username', (msg) => {
-    if ($(`.typing`)) {
+    if ($(`.typing`).length) {
       $(`.typing`)
         .first()
         .before($('<li class="messages-item">')
           .append(`<b>'${msg.username}' is now '${msg.newUsername}'</b>`));
     } else {
       $messagesList
-      .append($('<li class="messages-item">')
-        .append(`<b>'${msg.username}' is now '${msg.newUsername}'</b>`));
+        .append($('<li class="messages-item">')
+          .append(`<b>'${msg.username}' is now '${msg.newUsername}'</b>`));
     };
     chatScroll();
   });
@@ -72,7 +72,7 @@ $(function () {
   });
   socket.on('chat message', (msg) => {
     if (typing) stopTyping();
-    if ($(`.typing`)) {
+    if ($(`.typing`).length) {
       $(`.typing`)
         .first()
         .before($(`<li class="messages-item"><b>${msg.username}:</b> ${msg.message}</li>`));
@@ -82,8 +82,7 @@ $(function () {
     chatScroll();
   });
   socket.on(('user status'), (msg) => {
-    if (typing  && msg.status === 'disconnected') $(`.typing.${msg.id}`).remove();
-    if ($(`.typing`)) {
+    if ($(`.typing`).length) {
       $(`.typing`)
         .first()
         .before($('<li class="messages-item">').append(`<b>${msg.username} ${msg.status}!</b>`));
