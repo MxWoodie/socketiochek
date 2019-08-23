@@ -1,39 +1,61 @@
 $(function () {
-  var socket = io();
+  const socket = io();
+  const $usernameForm = $('.username-form');
+  const $usernameInput = $('.username-input');
+  const $usersList = $('.users-list');
+  const $messagesForm = $('.messages-form');
+  const $messagesInput = $('.messages-input');
+  const $messagesList = $('.messages-list');
+
   socket.on('set username placeholder', (username) => {
-    document.querySelector('.username-input').placeholder = username;
+    $usernameInput.attr('placeholder', username);
   });
   socket.on('update list of users', (users) => {
-    $('.users-list').empty();
+    $usersList.empty();
     users.forEach(user => {
-      $('.users-list').append($('<li class="users-item">').text(user));
+      $usersList.append($('<li class="users-item">').text(user));
     });
   });
-  $('.username-form').submit((e) => {
-    e.preventDefault(); // prevents page reloading
-    socket.emit('set username', $('.username-input').val());
-    $('.username-input').val('');
+  $usernameForm.submit((e) => {
+    submitForm('set username', e);
     return false;
   });
   socket.on('set username', (msg) => {
-    $('.messages-list').append($('<li class="messages-item">').text(msg));
+    $messagesList
+      .append($('<li class="messages-item">')
+      .append(`<b>'${msg.username}' is now '${msg.newUsername}'</b>`));
     chatScroll();
   });
-  $('.messages-form').submit((e) => {
-    e.preventDefault(); // prevents page reloading
-    socket.emit('chat message', $('.messages-input').val());
-    $('.messages-input').val('');
+  $messagesForm.submit((e) => {
+    submitForm('chat message', e);
     return false;
   });
   socket.on('chat message', (msg) => {
-    $('.messages-list').append($(`<li class="messages-item"><b>${msg.username}:</b> ${msg.message}</li>`));
+    $messagesList.append($(`<li class="messages-item"><b>${msg.username}:</b> ${msg.message}</li>`));
     chatScroll();
   });
   socket.on(('user status'), (msg) => {
-    $('.messages-list').append($('<li class="messages-item">').append(msg));
+    $messagesList.append($('<li class="messages-item">').append(`<b>${msg.username} ${msg.status}!</b>`));
     chatScroll();
   });
+  const submitForm = (socketEvent, e) => {
+    e.preventDefault();
+    switch (socketEvent) {
+      case 'set username':
+        socket.emit('set username', $usernameInput.val());
+        $usernameInput.val('');
+        break;
+
+      case 'chat message':
+        socket.emit('chat message', $messagesInput.val());
+        $messagesInput.val('');
+        break;
+
+      default:
+        throw new Error('Submit error');
+    }
+  };
   const chatScroll = () => {
-    $('.messages-list').animate({scrollTop: $('.messages-list').prop("scrollHeight")}, 300);
-  }
+    $messagesList.animate({scrollTop: $messagesList.prop("scrollHeight")}, 300);
+  };
 });

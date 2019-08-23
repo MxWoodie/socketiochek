@@ -3,6 +3,7 @@ const app = express();
 const path = require('path');
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
+const port = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/index.html');
@@ -13,32 +14,28 @@ app.use(express.static(path.join(__dirname, 'public')));
 io.on('connection', (socket) => {
   socket.username = socket.id;
   socket.emit('set username placeholder', socket.username);
-  updateUserList();
-  socket.broadcast.emit('user status', `${socket.username} connected!`);
+  updateUsersList();
+  socket.broadcast.emit('user status', { username: socket.username, status: 'connected' });
   socket.on('chat message', (message) => {
-    const msg = {
-      username: socket.username,
-      message: message
-    }
-    io.emit('chat message',  msg);
+    io.emit('chat message',  { username: socket.username, message: message });
   });
   socket.on('set username', (newUsername) => {
-    io.emit('set username', `${socket.username} is now ${newUsername}`, newUsername);
+    io.emit('set username', { username: socket.username, newUsername: newUsername });
     socket.username = newUsername;
     socket.emit('set username placeholder', socket.username);
-    updateUserList();
+    updateUsersList();
   });
   socket.on('disconnect', () => {
-    socket.broadcast.emit('user status', `${socket.username} disconnected!`);
-    updateUserList();
+    socket.broadcast.emit('user status', { username: socket.username, status: 'disconnected' });
+    updateUsersList();
   });
 });
 
-http.listen( process.env.PORT || 3000, () => {
-  console.log('Listening on port 3000')
+http.listen( port, () => {
+  console.log(`Listening on port ${port}`)
 });
 
-function updateUserList() {
+function updateUsersList() {
   const userList = [];
   for(key in io.sockets.connected) {
     const username = io.sockets.connected[key].username;
