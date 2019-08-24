@@ -1,10 +1,11 @@
 .chat-main {
   display: flex;
   justify-content: center;
+  overflow: hidden;
 }
 
 .chat-username-section,
-.chat-users {
+.chat-users-section {
   width: 20%;
   background-color: #eceff1;
 }
@@ -68,4 +69,76 @@
   font-weight: bold;
   display: inline-block;
   width: 15px;
+}
+
+.hidden-large {
+  display: none;
+}
+
+@media only screen and (max-width: 1000px) {
+  .menu-button {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .hidden-large {
+    display: block;
+  }
+
+  .hidden-large:checked ~ .chat-username-section,
+  .hidden-large:checked ~ .chat-users-section {
+    visibility: visible;
+  }
+
+  .hidden-large:checked ~ .chat-section {
+    visibility: hidden;
+  }
+
+  .chat-main {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+  }
+
+  .chat-username-section,
+  .chat-users-section {
+    width: 100%;
+    background-color: #eceff1;
+    visibility: hidden;
+  }
+
+  .chat-username-section {
+    position: fixed;
+    height: 50px;
+  }
+
+  .username-input {
+    height: 25px;
+  }
+
+  .username-submit {
+    height: 25px;
+  }
+
+  .chat-users-section {
+    position: fixed;
+    top: 80px;
+    height: 100%;
+  }
+
+  .chat-section {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .messages-list {
+    height: calc(100vh - 40px);
+    padding: 0;
+  }
+  
+  .messages-form {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
 }

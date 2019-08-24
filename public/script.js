@@ -10,14 +10,6 @@ $(function () {
   let typing = false;
   let timeout = undefined;
   
-  /*
-  Нажимаем кнопку
-  Отправляется ивент
-  Добавляется тайпинг
-  Запускается таймер обновляемый после каждого тайпа
-  По прошествию таймера или отправке сообщения убираем тайпинг
-  */
-
   $messagesInput.keydown(() => {
     if (typing === false) {
       typing = true;
@@ -32,6 +24,7 @@ $(function () {
     $messagesList
       .append($(`<li class="messages-item typing ${user.id}">`)
         .append(`<i>${user.username} is typing a message...</i>`));
+    chatScroll();
   });
   const stopTyping = () => {
     typing = false;
