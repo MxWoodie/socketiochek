@@ -137,10 +137,15 @@
   .username-submit {
     height: 25px;
   }
+  .recipient-select {
+    position: fixed;
+    top: 90px;
+    height: 20px;
+  }
 
   .chat-users-section {
     position: fixed;
-    top: 90px;
+    top: 110px;
   }
 
   .chat-section {
