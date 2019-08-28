@@ -16,6 +16,7 @@
           <input class="username-input" autocomplete="off" required placeholder="Username" />
           <button class="username-submit">Change username</button>
       </form>
+      <select class="recipient-select" name="recipient"><option class="recipient-option" value="/">General chat</option></select>
     </section>
     <section class="chat-section">
       <ul class="messages-list"></ul>
@@ -30,8 +31,8 @@
       <ul class="users-list"></ul>
     </section>
   </main>
-  <script src="/socket.io/socket.io.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

@@ -16,8 +16,13 @@ io.on('connection', (socket) => {
   socket.emit('set username placeholder', socket.username);
   updateUsersList();
   socket.broadcast.emit('user status', { username: socket.username, status: 'connected' });
-  socket.on('chat message', (message) => {
-    io.emit('chat message',  { username: socket.username, message: message });
+  socket.on('chat message', (data) => {
+    if (data.recipient.id === '/') {
+      io.emit('chat message',  { username: socket.username, message: data.message });
+    } else {
+      socket.emit('chat message', { username: `To ${data.recipient.username}`, message: data.message, private: 1 });
+      socket.to(data.recipient.id).emit('chat message', { username: `From ${socket.username}`, message: data.message, private: 1 });
+    }
   });
   socket.on('set username', (newUsername) => {
     io.emit('set username', { username: socket.username, newUsername: newUsername });
@@ -46,7 +51,7 @@ function updateUsersList() {
   const userList = [];
   for(key in io.sockets.connected) {
     const username = io.sockets.connected[key].username;
-    userList.push(username);
+    userList.push({id: key, username: username});
   }
   io.emit('update list of users', userList);
 }

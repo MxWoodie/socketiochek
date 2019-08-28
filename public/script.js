@@ -2,6 +2,7 @@ $(function () {
   const socket = io();
   const $usernameForm = $('.username-form');
   const $usernameInput = $('.username-input');
+  const $recipientSelect = $('.recipient-select');
   const $usersList = $('.users-list');
   const $messagesForm = $('.messages-form');
   const $messagesInput = $('.messages-input');
@@ -9,9 +10,9 @@ $(function () {
 
   let typing = false;
   let timeout = undefined;
-  
+
   $messagesInput.keydown(() => {
-    if (typing === false) {
+    if (typing === false && $recipientSelect.val() === '/') {
       typing = true;
       socket.emit('start typing');
       timeout = setTimeout(stopTyping, 5000);
@@ -38,8 +39,15 @@ $(function () {
   });
   socket.on('update list of users', (users) => {
     $usersList.empty();
+    $recipientSelect.empty();
+    $recipientSelect.append($(`<option class="recipient-option" value="/">`).text('General chat'));
     users.forEach(user => {
-      $usersList.append($('<li class="users-item">').text(user));
+      $usersList.append($('<li class="users-item">').text(user.username));
+      if (user.id === socket.id){
+        return;
+      } else {
+        $recipientSelect.append($(`<option class="recipient-option" value="${user.id}">`).text(user.username));
+      }
     });
   });
   $usernameForm.submit((e) => {
@@ -64,13 +72,15 @@ $(function () {
     return false;
   });
   socket.on('chat message', (msg) => {
+    let textClass = '';
+    if (msg.private) textClass = 'messages-item-private';
     if (typing) stopTyping();
     if ($(`.typing`).length) {
       $(`.typing`)
         .first()
-        .before($(`<li class="messages-item"><b>${msg.username}:</b> ${msg.message}</li>`));
+        .before($(`<li class="messages-item"><b>${msg.username}:</b> ${msg.message}</li>`).addClass(textClass));
     } else {
-      $messagesList.append($(`<li class="messages-item"><b>${msg.username}:</b> ${msg.message}</li>`));
+      $messagesList.append($(`<li class="messages-item"><b>${msg.username}:</b> ${msg.message}</li>`).addClass(textClass));
     };
     chatScroll();
   });
@@ -93,7 +103,15 @@ $(function () {
         break;
 
       case 'chat message':
-        socket.emit('chat message', $messagesInput.val());
+        console.log($('.recipient-option:selected').text());
+        socket.emit('chat message', 
+        { 
+          recipient: {
+            id: $recipientSelect.val(),
+            username: $('.recipient-option:selected').text()
+          },
+          message: $messagesInput.val() 
+        });
         $messagesInput.val('');
         break;
 

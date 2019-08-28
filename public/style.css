@@ -15,6 +15,10 @@
   box-sizing: border-box;
 }
 
+.recipient-select {
+  width: 100%;
+}
+
 .chat-section {
   position: relative;
   width: 60%;
@@ -28,6 +32,10 @@
   list-style: none;
   padding: 10px 20px 0;
   margin: 0;
+}
+
+.messages-item-private {
+  color: blue;
 }
 
 .messages-form {
