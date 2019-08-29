@@ -10,11 +10,8 @@ $(function () {
   let typing = false;
   let timeout = undefined;
 
-  $(document).ready(() => {
-    socket.username = socket.id;
-  });
   $usernameButton.click(() => {
-    const username = prompt('Enter username', socket.username).trim();
+    const username = prompt('Enter username', socket.username ? socket.username : socket.id).trim();
     if (username) {
       socket.emit('set username', username);
     }

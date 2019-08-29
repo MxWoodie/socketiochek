@@ -10,11 +10,6 @@
   background-color: #eceff1;
 }
 
-.username-input {
-  width: 100%;
-  box-sizing: border-box;
-}
-
 .recipient-select {
   width: 100%;
 }
@@ -127,25 +122,22 @@
   .chat-username-section {
     position: fixed;
     top: 40px;
-    height: 50px;
   }
 
-  .username-input {
+  .username-button {
     height: 25px;
   }
 
-  .username-submit {
-    height: 25px;
-  }
   .recipient-select {
     position: fixed;
-    top: 90px;
+    top: 65px;
+    left: 0;
     height: 20px;
   }
 
   .chat-users-section {
     position: fixed;
-    top: 110px;
+    top: 85px;
   }
 
   .chat-section {
