@@ -1,8 +1,7 @@
 $(function () {
   const socket = io();
-  const $usernameForm = $('.username-form');
-  const $usernameInput = $('.username-input');
   const $recipientSelect = $('.recipient-select');
+  const $usernameButton = $('.username-button');
   const $usersList = $('.users-list');
   const $messagesForm = $('.messages-form');
   const $messagesInput = $('.messages-input');
@@ -11,6 +10,15 @@ $(function () {
   let typing = false;
   let timeout = undefined;
 
+  $(document).ready(() => {
+    socket.username = socket.id;
+  });
+  $usernameButton.click(() => {
+    const username = prompt('Enter username', socket.username).trim();
+    if (username) {
+      socket.emit('set username', username);
+    }
+  });
   $messagesInput.keydown(() => {
     if (typing === false && $recipientSelect.val() === '/') {
       typing = true;
@@ -34,9 +42,6 @@ $(function () {
   socket.on('stop typing', (user) => {
     $(`.typing.${user.id}`).remove();
   });
-  socket.on('set username placeholder', (username) => {
-    $usernameInput.attr('placeholder', username);
-  });
   socket.on('update list of users', (users) => {
     $usersList.empty();
     $recipientSelect.empty();
@@ -50,11 +55,8 @@ $(function () {
       }
     });
   });
-  $usernameForm.submit((e) => {
-    submitForm('set username', e);
-    return false;
-  });
   socket.on('set username', (msg) => {
+    socket.username = msg.newUsername;
     if ($(`.typing`).length) {
       $(`.typing`)
         .first()
@@ -97,10 +99,10 @@ $(function () {
   const submitForm = (socketEvent, e) => {
     e.preventDefault();
     switch (socketEvent) {
-      case 'set username':
-        socket.emit('set username', $usernameInput.val());
-        $usernameInput.val('');
-        break;
+      // case 'set username':
+      //   socket.emit('set username', $usernameInput.val());
+      //   $usernameInput.val('');
+      //   break;
 
       case 'chat message':
         console.log($('.recipient-option:selected').text());

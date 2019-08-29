@@ -13,7 +13,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 io.on('connection', (socket) => {
   socket.username = socket.id;
-  socket.emit('set username placeholder', socket.username);
   updateUsersList();
   socket.broadcast.emit('user status', { username: socket.username, status: 'connected' });
   socket.on('chat message', (data) => {
@@ -27,11 +26,10 @@ io.on('connection', (socket) => {
   socket.on('set username', (newUsername) => {
     io.emit('set username', { username: socket.username, newUsername: newUsername });
     socket.username = newUsername;
-    socket.emit('set username placeholder', socket.username);
     updateUsersList();
   });
   socket.on('start typing', () => {
-    io.emit('start typing', { id: socket.id ,username: socket.username });
+    io.emit('start typing', { id: socket.id, username: socket.username });
   });
   socket.on('stop typing', () => {
     io.emit('stop typing', { id: socket.id, username: socket.username });
