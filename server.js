@@ -6,10 +6,10 @@ const io = require('socket.io')(http);
 const port = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html');
+  res.sendFile(__dirname + '/dist/index.html');
 });
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'dist')));
 
 io.on('connection', (socket) => {
   socket.username = socket.id;

@@ -1,3 +1,8 @@
+import $ from 'jquery';
+import io from 'socket.io-client';
+import './normalize.css';
+import './style.css';
+
 $(function () {
   const socket = io();
   const $recipientSelect = $('.recipient-select');
