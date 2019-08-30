@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "start": "node server.js",
+    "watch": "webpack --watch",
     "build": "webpack"
   },
   "repository": {
