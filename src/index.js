@@ -10,11 +10,36 @@ $(function () {
   const $usersList = $('.users-list');
   const $messagesForm = $('.messages-form');
   const $messagesInput = $('.messages-input');
+  const $messagesImageInput = $('.messages-image-input');
   const $messagesList = $('.messages-list');
+  const $modal = $('.modal-section');
+  const $modalImage = $('.modal-content');
+  const $modalClose = $('.modal-close');
 
+  let image = undefined;
   let typing = false;
   let timeout = undefined;
 
+  $messagesList.on('click', '.messages-item-image', (e) => {
+    console.log(e);
+    $modal.css('display', 'block');
+    $modalImage.attr('src', e.target.src);
+  });
+  $modalClose.on('click', () => {
+    $modal.css('display', 'none');
+  });
+  $messagesImageInput.change(() => {
+    const file = $messagesImageInput.get(0).files[0];
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      image = reader.result;
+    };
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  });
   $usernameButton.click(() => {
     const username = prompt('Enter username', socket.username ? socket.username : socket.id).trim();
     if (username) {
@@ -98,6 +123,23 @@ $(function () {
     };
     chatScroll();
   });
+  socket.on(('chat image'), (msg) => {
+    let textClass = '';
+    if (msg.private) textClass = 'messages-item-private';
+    if (typing) stopTyping();
+    if ($(`.typing`).length) {
+      $(`.typing`)
+        .first()
+        .before($(`<li class="messages-item">
+          <b>${msg.username}:</b> <img class="messages-item-image" src="${msg.image}" /></li>`)
+          .addClass(textClass));
+    } else {
+      $messagesList.append($(`<li class="messages-item">
+        <b>${msg.username}:</b> <img class="messages-item-image" src="${msg.image}" /></li>`)
+        .addClass(textClass));
+    };
+    chatScroll();
+  });
   const submitForm = (socketEvent, e) => {
     e.preventDefault();
     switch (socketEvent) {
@@ -107,15 +149,16 @@ $(function () {
       //   break;
 
       case 'chat message':
-        console.log($('.recipient-option:selected').text());
         socket.emit('chat message', 
         { 
           recipient: {
             id: $recipientSelect.val(),
             username: $('.recipient-option:selected').text()
           },
-          message: $messagesInput.val() 
+          message: $messagesInput.val(),
+          image: image
         });
+        image = undefined;
         $messagesInput.val('');
         break;
 

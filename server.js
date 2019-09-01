@@ -18,9 +18,16 @@ io.on('connection', (socket) => {
   socket.on('chat message', (data) => {
     if (data.recipient.id === '/') {
       io.emit('chat message',  { username: socket.username, message: data.message });
+      if( data.image ) {
+        io.emit('chat image', { username: socket.username, image: data.image });
+      }
     } else {
       socket.emit('chat message', { username: `To ${data.recipient.username}`, message: data.message, private: 1 });
       socket.to(data.recipient.id).emit('chat message', { username: `From ${socket.username}`, message: data.message, private: 1 });
+      if( data.image ) {
+        socket.emit('chat image', { username: `To ${data.recipient.username}`, image: data.image, private: 1 });
+        socket.to(data.recipient.id).emit('chat image', { username: `From ${socket.username}`, image: data.image, private: 1 });
+      }
     }
   });
   socket.on('set username', (newUsername) => {

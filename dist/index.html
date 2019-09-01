@@ -16,9 +16,11 @@
     </section>
     <section class="chat-section">
       <ul class="messages-list"></ul>
-      <form class="messages-form" action="">
+      <form class="messages-form" enctype="multipart/form-data">
         <input class="messages-input" autocomplete="off" autofocus 
         required placeholder="Start typing your message..." />
+        <label class="custom-image-input" for="image-input">Pic</label>
+        <input class="messages-image-input" id="image-input" type="file" accept="image/png, image/jpeg" />
         <button class="messages-submit">Send</button>
       </form>
     </section>
@@ -27,6 +29,10 @@
       <ul class="users-list"></ul>
     </section>
   </main>
+  <section class="modal-section">
+    <span class="modal-close">&times;</span>
+    <img class="modal-content" />
+  </section>
   <script src="bundle.js"></script>
 </body>
 </html>
